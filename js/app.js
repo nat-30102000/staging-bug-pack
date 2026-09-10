@@ -1,1 +1,1 @@
-PLACEHOLDER_WILL_FAIL
+__CURSOR_FILE__:/workspace/staging-bug-pack/js/app.js
