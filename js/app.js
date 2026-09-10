@@ -1,1 +1,1 @@
-{{file:/workspace/staging-bug-pack/js/app.js}}
+PLACEHOLDER_WILL_FAIL
