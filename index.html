@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>staging-bug-pack — Reproduction Packager for GitHub Issues</title>
+  <meta name="description" content="One-page client-side web app for staging bug reproduction packs that exports GitHub-issue-ready Markdown.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+</head>
+<body>
+
+  <!-- Top Application Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>staging-bug-pack <span class="brand-badge">Client-side</span></h1>
+          <p class="brand-tagline">Pack reproduction details into GitHub-issue-ready Markdown</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" id="autoDetectBtn" class="btn btn-secondary btn-sm" title="Auto-detect Browser and Operating System from your current session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          Auto-detect Env
+        </button>
+        <button type="button" id="sampleDataBtn" class="btn btn-secondary btn-sm" title="Load sample bug reproduction data to test formatting">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Load Demo Data
+        </button>
+        <button type="button" id="resetFormBtn" class="btn btn-secondary btn-sm" title="Clear all fields">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Grid -->
+  <main class="main-wrapper">
+    <div class="grid-container">
+
+      <!-- LEFT COLUMN: Form -->
+      <section class="card form-panel" aria-labelledby="form-heading">
+        <div class="card-header">
+          <h2 id="form-heading">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Bug Reproduction Details
+          </h2>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">Fields marked <span class="required-star">*</span> are required</span>
+        </div>
+
+        <div class="card-body">
+          <form id="bugReportForm" novalidate onsubmit="return false;">
+
+            <!-- 1. Title Section -->
+            <div class="form-section">
+              <div class="field-group" id="titleGroup">
+                <label for="issueTitle">Issue Title <span class="required-star">*</span></label>
+                <input type="text" id="issueTitle" placeholder="e.g. Checkout modal crashes when applying invalid promo code" required autocomplete="off">
+                <div class="error-message">Title is required.</div>
+                <span class="input-hint">Summarize the issue clearly (used as the GitHub Issue title &amp; H1).</span>
+              </div>
+            </div>
+
+            <!-- 2. Environment Section -->
+            <div class="form-section">
+              <div class="section-title-row">
+                <div class="section-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                  Environment
+                </div>
+              </div>
+
+              <div class="field-group" id="urlGroup">
+                <label for="stagingUrl">Staging URL <span style="font-weight: normal; color: var(--text-muted);">(optional)</span></label>
+                <input type="url" id="stagingUrl" placeholder="https://staging.example.com/checkout">
+                <span class="input-hint">Direct URL or staging route where the issue reproduces.</span>
+              </div>
+
+              <div class="field-row">
+                <div class="field-group" id="browserGroup">
+                  <label for="browserName">Browser <span class="required-star">*</span></label>
+                  <input type="text" id="browserName" list="browserSuggestions" placeholder="e.g. Chrome 128" required>
+                  <datalist id="browserSuggestions">
+                    <option value="Chrome 128.0 (macOS)">
+                    <option value="Chrome 128.0 (Windows)">
+                    <option value="Firefox 129.0">
+                    <option value="Safari 17.5">
+                    <option value="Edge 128.0">
+                    <option value="Mobile Safari (iOS 17)">
+                    <option value="Chrome Mobile (Android)">
+                  </datalist>
+                  <div class="error-message">Browser is required.</div>
+                </div>
+
+                <div class="field-group" id="osGroup">
+                  <label for="osName">Operating System <span class="required-star">*</span></label>
+                  <input type="text" id="osName" list="osSuggestions" placeholder="e.g. macOS Sonoma 14.5" required>
+                  <datalist id="osSuggestions">
+                    <option value="macOS Sonoma 14.6">
+                    <option value="macOS Ventura 13.6">
+                    <option value="Windows 11 Pro">
+                    <option value="Windows 10 Home">
+                    <option value="Ubuntu 24.04 LTS">
+                    <option value="iOS 17.6">
+                    <option value="Android 14">
+                  </datalist>
+                  <div class="error-message">Operating system is required.</div>
+                </div>
+              </div>
+
+              <div class="field-group" id="testNotesGroup">
+                <label for="testNotes">Test Account Notes <span style="font-weight: normal; color: var(--text-muted);">(optional)</span></label>
+                <input type="text" id="testNotes" placeholder="e.g. Role: Admin | User ID: qa-test-42 | Free tier">
+                <span class="input-hint">Role permissions, credentials, or test flags needed to reproduce.</span>
+              </div>
+            </div>
+
+            <!-- 3. Steps to Reproduce Section -->
+            <div class="form-section">
+              <div class="section-title-row">
+                <div class="section-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                  </svg>
+                  Steps to Reproduce <span class="required-star">*</span>
+                </div>
+                <button type="button" id="addStepBtn" class="btn btn-secondary btn-sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add Step
+                </button>
+              </div>
+
+              <div class="field-group" id="stepsGroup">
+                <div id="stepsList" class="steps-list">
+                  <!-- Dynamic step items rendered via JavaScript -->
+                </div>
+                <div class="error-message">At least one non-empty step to reproduce is required.</div>
+                <span class="input-hint">Provide exact step-by-step instructions. You can add, reorder, or remove steps.</span>
+              </div>
+            </div>
+
+            <!-- 4. Expected & Actual Behavior -->
+            <div class="form-section">
+              <div class="field-group" id="expectedGroup">
+                <label for="expectedBehavior">Expected Behavior <span class="required-star">*</span></label>
+                <textarea id="expectedBehavior" placeholder="Describe what you expected to happen... (e.g. Validation error displays 'Invalid promo code' and user stays on checkout)." required></textarea>
+                <div class="error-message">Expected behavior is required.</div>
+              </div>
+
+              <div class="field-group" id="actualGroup" style="margin-top: 1rem;">
+                <label for="actualBehavior">Actual Behavior <span class="required-star">*</span></label>
+                <textarea id="actualBehavior" placeholder="Describe what actually occurred... (e.g. Page crashes with an unhandled exception and blank screen, console shows 500 error)." required></textarea>
+                <div class="error-message">Actual behavior is required.</div>
+              </div>
+            </div>
+
+            <!-- 5. Screenshots & Evidence (0-5 slots) -->
+            <div class="form-section">
+              <div class="section-title-row">
+                <div class="section-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  Screenshots &amp; Evidence
+                </div>
+                <span id="screenshotSlotCount" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">0 / 5 uploaded</span>
+              </div>
+
+              <div class="screenshots-container">
+                <!-- Dropzone -->
+                <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Drop screenshot files here or click to browse">
+                  <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                  <div class="dropzone-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                  </div>
+                  <div class="dropzone-text">
+                    <strong>Click to upload</strong> or drag &amp; drop screenshot images
+                  </div>
+                  <div class="dropzone-subtext">PNG, JPG, WebP, GIF (up to 5 images). Stored locally in your browser memory.</div>
+                </div>
+
+                <!-- Screenshots Preview Grid -->
+                <div id="screenshotsGrid" class="screenshots-preview-grid">
+                  <!-- Dynamic thumbnails rendered via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Validation Error Alert Banner -->
+            <div id="validationBanner" class="validation-banner" role="alert">
+              <svg class="banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <div id="bannerText">Please complete all required fields before exporting.</div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Form Footer Actions -->
+        <div class="card-footer">
+          <div class="btn-group">
+            <button type="button" id="copyMarkdownBtn" class="btn btn-primary" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Markdown
+            </button>
+            <button type="button" id="downloadMarkdownBtn" class="btn btn-secondary" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download .md File
+            </button>
+            <button type="button" id="previewJumpBtn" class="btn btn-secondary" title="View live Markdown preview">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Preview Markdown
+            </button>
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">No backend &bull; Zero network calls</span>
+        </div>
+      </section>
+
+
+      <!-- RIGHT COLUMN: Live Markdown Output & Preview -->
+      <section class="card preview-panel" aria-labelledby="preview-heading">
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <h2 id="preview-heading">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              Markdown Export
+            </h2>
+            <div id="statusBadge" class="status-badge status-blocked">
+              <span class="status-dot"></span>
+              <span id="statusBadgeText">Requirements missing</span>
+            </div>
+          </div>
+
+          <div class="preview-tabs" role="tablist">
+            <button type="button" id="tabRawBtn" class="preview-tab-btn active" role="tab" aria-selected="true">Raw Markdown</button>
+            <button type="button" id="tabRenderedBtn" class="preview-tab-btn" role="tab" aria-selected="false">Rendered View</button>
+          </div>
+        </div>
+
+        <div class="preview-content-box">
+          <!-- Monospace Raw Code View -->
+          <pre id="rawMarkdownView" class="raw-code-container" tabindex="0" aria-label="Generated Markdown Output"></pre>
+
+          <!-- Formatted HTML Preview View -->
+          <div id="renderedMarkdownView" class="rendered-preview" aria-label="Formatted HTML Preview"></div>
+        </div>
+
+        <div class="card-footer">
+          <div class="btn-group">
+            <button type="button" id="headerCopyBtn" class="btn btn-primary btn-sm" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Markdown
+            </button>
+            <button type="button" id="headerDownloadBtn" class="btn btn-secondary btn-sm" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download .md
+            </button>
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">Ready for GitHub Issue description</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p><strong>staging-bug-pack</strong> &bull; Client-side bug reproduction packager &bull; Output is 100% standard GitHub-issue-ready Markdown.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/validator.js"></script>
+  <script src="js/markdown.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
