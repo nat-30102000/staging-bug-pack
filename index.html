@@ -190,6 +190,18 @@
                 <textarea id="actualBehavior" placeholder="Describe what actually occurred... (e.g. Page crashes with an unhandled exception and blank screen, console shows 500 error)." required></textarea>
                 <div class="error-message">Actual behavior is required.</div>
               </div>
+
+              <div class="field-group" id="consoleNotesGroup" style="margin-top: 1rem;">
+                <label for="consoleNotes">Console Notes <span style="font-weight: normal; color: var(--text-muted);">(optional)</span></label>
+                <textarea id="consoleNotes" placeholder="Paste relevant console errors, stack traces, or warnings..." rows="3"></textarea>
+                <span class="input-hint">Included in Markdown only when filled.</span>
+              </div>
+
+              <div class="field-group" id="networkNotesGroup" style="margin-top: 1rem;">
+                <label for="networkNotes">Network Notes <span style="font-weight: normal; color: var(--text-muted);">(optional)</span></label>
+                <textarea id="networkNotes" placeholder="Paste failing request URLs, status codes, or response snippets..." rows="3"></textarea>
+                <span class="input-hint">Included in Markdown only when filled.</span>
+              </div>
             </div>
 
             <!-- 5. Screenshots & Evidence (0-5 slots) -->
@@ -261,6 +273,12 @@
               </svg>
               Download .md File
             </button>
+            <button type="button" id="openGithubIssueBtn" class="btn btn-secondary" disabled title="Open a new GitHub issue with this pack prefilled">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              Open GitHub Issue
+            </button>
             <button type="button" id="previewJumpBtn" class="btn btn-secondary" title="View live Markdown preview">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -330,6 +348,28 @@
 
     </div>
   </main>
+
+  <!-- GitHub repo dialog -->
+  <div id="githubRepoDialog" class="modal-overlay" hidden aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="githubRepoDialogTitle">
+      <div class="modal-header">
+        <h3 id="githubRepoDialogTitle">Open GitHub Issue</h3>
+        <button type="button" id="githubRepoDialogClose" class="modal-close" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group" id="githubRepoGroup">
+          <label for="githubRepoInput">Repository <span class="required-star">*</span></label>
+          <input type="text" id="githubRepoInput" placeholder="owner/repo" autocomplete="off" spellcheck="false">
+          <span class="input-hint">Format: owner/repo (last value is remembered in this browser).</span>
+          <div class="error-message">Enter a valid owner/repo (e.g. acme/web-app).</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="githubRepoCancelBtn" class="btn btn-secondary btn-sm">Cancel</button>
+        <button type="button" id="githubRepoConfirmBtn" class="btn btn-primary btn-sm">Open Issue</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
